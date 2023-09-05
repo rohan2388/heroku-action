@@ -21,9 +21,6 @@ function gitCredentials({ email }) {
 }
 
 function deploy({ useforce, branch, appdir }) {
-  // https://devcenter.heroku.com/changelog-items/775
-  execComm(`git fetch --all --unshallow`);
-
   if (appdir === "") {
     execComm(
       `git push heroku ${branch}:refs/heads/main ${useforce ? "--force" : ""}`
