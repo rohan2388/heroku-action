@@ -15,53 +15,52 @@ addConfigs(inVars);
 addDynamicFiles(inVars);
 deploy(inVars);
 
-function gitCredentials({email}){
+function gitCredentials({ email }) {
   execComm(`git config --global user.name "Automated Heroku Deploy"`);
   execComm(`git config --global user.email "${email}"`);
 }
 
-function deploy({useforce, branch,appdir}){
-
+function deploy({ useforce, branch, appdir }) {
   if (appdir === "") {
-    execComm(`git push heroku ${branch}:refs/heads/master ${useforce? "--force" : ""}`);
+    execComm(
+      `git push heroku ${branch}:refs/heads/main ${useforce ? "--force" : ""}`
+    );
   } else {
     execComm(
-      `git push ${useforce? "--force" : ""} heroku \`git subtree split --prefix=${appdir} ${branch}\`:refs/heads/master`
+      `git push ${
+        useforce ? "--force" : ""
+      } heroku \`git subtree split --prefix=${appdir} ${branch}\`:refs/heads/main`
     );
   }
-  
 }
 
-function addBuildpacks({buildpacks}){
-
-  if(buildpacks){
+function addBuildpacks({ buildpacks }) {
+  if (buildpacks) {
     execComm("heroku buildpacks:clear");
 
     var buildpacks = JSON.parse(buildpacks);
 
-    // Add first buildpack 
+    // Add first buildpack
     var buildpack = buildpacks.shift();
     execComm(`heroku buildpacks:set ${buildpack}`);
 
     // Add anothers buildpacks
-    buildpacks.forEach((bp) => {
+    buildpacks.forEach(bp => {
       execComm(`heroku buildpacks:add ${bp}`);
     });
 
     console.log("Added buildpacks");
-    
   }
-
 }
 
-function addDynamicFiles({ dynamicFiles }){
-  if(dynamicFiles){
+function addDynamicFiles({ dynamicFiles }) {
+  if (dynamicFiles) {
     execComm(`git add -A . && git commit -m "Added dynamic files"`);
     console.log("Added dynamic files");
   }
 }
 
-function addConfigs({ app_name, env_file, appdir }){
+function addConfigs({ app_name, env_file, appdir }) {
   let configVars = [];
   for (let key in process.env) {
     if (key.startsWith("HD_")) {
@@ -82,7 +81,7 @@ function addConfigs({ app_name, env_file, appdir }){
   }
 }
 
-function selectHerokuApp ({ app_name }) {
+function selectHerokuApp({ app_name }) {
   try {
     execComm(`heroku git:remote --app ${app_name}`);
     console.log("Added git remote heroku");
@@ -92,20 +91,25 @@ function selectHerokuApp ({ app_name }) {
   }
 }
 
-function loginHeroku(){
+function loginHeroku() {
   execComm("heroku login");
   console.log("Successfully logged into heroku");
 }
 
-function createProcfile({ procfile, appdir }){
+function createProcfile({ procfile, appdir }) {
   if (procfile) {
     fs.writeFileSync(path.join(appdir, "Procfile"), procfile);
-    execComm(`git add -A ${path.join(appdir, "Procfile")} && git commit -m 'Added Procfile'`);
+    execComm(
+      `git add -A ${path.join(
+        appdir,
+        "Procfile"
+      )} && git commit -m 'Added Procfile'`
+    );
     console.log("Written Procfile with custom configuration");
   }
 }
 
-function catNetrcFile({email, api_key}){
+function catNetrcFile({ email, api_key }) {
   execComm(`cat >~/.netrc <<EOF
   machine api.heroku.com
       login ${email}
@@ -116,31 +120,27 @@ function catNetrcFile({email, api_key}){
   EOF`);
 
   console.log("Created netrc file");
-
-
 }
 
-function getInputVars(){
-
+function getInputVars() {
   let inputVars = {
-      api_key: core.getInput("heroku_api_key"),
-      email: core.getInput("heroku_email"),
-      app_name: core.getInput("heroku_app_name"),
-      buildpacks: core.getInput("buildpacks"),
-      branch: core.getInput("branch"),
-      useforce: core.getInput("useforce"),
-      appdir: core.getInput("appdir"),
-      procfile: core.getInput("procfile"),
-      env_file: core.getInput("env_file"),
-      dynamicFiles: core.getInput("dynamicFiles"),
+    api_key: core.getInput("heroku_api_key"),
+    email: core.getInput("heroku_email"),
+    app_name: core.getInput("heroku_app_name"),
+    buildpacks: core.getInput("buildpacks"),
+    branch: core.getInput("branch"),
+    useforce: core.getInput("useforce"),
+    appdir: core.getInput("appdir"),
+    procfile: core.getInput("procfile"),
+    env_file: core.getInput("env_file"),
+    dynamicFiles: core.getInput("dynamicFiles"),
   };
 
   console.log("Obtained input vars");
 
   return inputVars;
-
 }
 
-function execComm(comm){
-  return execSync(comm, {stdio: 'inherit'});
+function execComm(comm) {
+  return execSync(comm, { stdio: "inherit" });
 }

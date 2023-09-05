@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/CDNievas/heroku-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.6"
+    "@actions/core": "^1.2.6",
+    "dotenv": "^16.3.1"
   }
 }
