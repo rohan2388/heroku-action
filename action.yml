@@ -20,7 +20,7 @@ inputs:
     required: false
   useforce:
     description: "Set this to true if want to use --force"
-    default: false
+    default: ""
     required: false
   appdir:
     description: "Set if your app is located in a subdirectory."
@@ -33,7 +33,7 @@ inputs:
   dynamicFiles:
     description: "Set to true if you need upload files generated dynamically by the GitHub Action to Heroku"
     required: false
-    default: false
+    default: ""
   buildpacks:
     description: "Buildpacks to install on Heroku"
     required: false
