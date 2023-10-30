@@ -1,6 +1,6 @@
 name: "Heroku Action"
 description: "GitHub Action for deploying on Heroku"
-author: "CDNievas"
+author: "Rohan Das"
 branding:
   icon: "stop-circle"
   color: "purple"
@@ -40,6 +40,10 @@ inputs:
     default: ""
   env_file:
     description: "Path to an localized env file"
+    required: false
+    default: ""
+  region:
+    description: "Region to deploy to (eu, us, or any other valid region)"
     required: false
     default: ""
 outputs:

@@ -900,7 +900,10 @@ function selectHerokuApp({ app_name }) {
     execComm(`heroku git:remote --app ${app_name}`);
     console.log("Added git remote heroku");
   } catch (err) {
-    execComm(`heroku create ${app_name}`);
+    const cmd = `heroku create ${app_name} ${
+      inVars.region ? `--region ${inVars.region}` : ""
+    }`;
+    execComm(cmd);
     console.log("Successfully created a new heroku app");
   }
 }
@@ -948,6 +951,7 @@ function getInputVars() {
     procfile: core.getInput("procfile"),
     env_file: core.getInput("env_file"),
     dynamicFiles: core.getInput("dynamicFiles"),
+    region: core.getInput("region"),
   };
 
   console.log("Obtained input vars");
