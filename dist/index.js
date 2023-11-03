@@ -892,7 +892,6 @@ function addConfigs({ app_name, env_file, env, appdir }) {
   }
 
   if (env) {
-    console.log("xenv", env);
     const variables = (__nccwpck_require__(437).parse)(env);
     const newVars = [];
     for (let key in variables) {

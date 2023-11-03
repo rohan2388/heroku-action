@@ -78,7 +78,6 @@ function addConfigs({ app_name, env_file, env, appdir }) {
   }
 
   if (env) {
-    console.log("xenv", env);
     const variables = require("dotenv").parse(env);
     const newVars = [];
     for (let key in variables) {
