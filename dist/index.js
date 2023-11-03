@@ -874,7 +874,7 @@ function addDynamicFiles({ dynamicFiles }) {
   }
 }
 
-function addConfigs({ app_name, env_file, appdir }) {
+function addConfigs({ app_name, env_file, env, appdir }) {
   let configVars = [];
   for (let key in process.env) {
     if (key.startsWith("HD_")) {
@@ -890,6 +890,17 @@ function addConfigs({ app_name, env_file, appdir }) {
     }
     configVars = [...configVars, ...newVars];
   }
+
+  if (env) {
+    console.log("xenv", env);
+    const variables = (__nccwpck_require__(437).parse)(env);
+    const newVars = [];
+    for (let key in variables) {
+      newVars.push(key + "=" + variables[key]);
+    }
+    configVars = [...configVars, ...newVars];
+  }
+
   if (configVars.length !== 0) {
     execComm(`heroku config:set --app=${app_name} ${configVars.join(" ")}`);
   }
@@ -952,6 +963,7 @@ function getInputVars() {
     env_file: core.getInput("env_file"),
     dynamicFiles: core.getInput("dynamicFiles"),
     region: core.getInput("region"),
+    env: core.getInput("env"),
   };
 
   console.log("Obtained input vars");
